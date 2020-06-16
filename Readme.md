@@ -5,3 +5,17 @@ A presentation of our results can be found here: https://docs.google.com/present
 
 # Traffic Flow of Syndey, Australia
 - This project aims to predict traffic patterns on the Eastern Distributor Highway (M1) in Sydney, Australia. The data was provided by the government of New South Wales for the Williams Street Exit toll (https://nswtollroaddata.com). With this information, city planners, trucking companies, and commuters can better plan and predict future traffic levels and plan their commutes accordingly.
+
+## Single Day of Forecasting with AR Model
+[](ARForecast_byday)
+- The AR model predictions over the course of one day
+
+## Seven Day Forecasting with ARIMA Model
+[](arima_model_71)
+
+## Autocorrelation of Total Volume of Traffic
+[](autocorr_totalvolumne)
+
+## Partial Autocorrelation of Total Volume of Traffic
+[](partial_autocorr_weekdiff)
+- This partial autocorrelation uses a feature that is offset by a week

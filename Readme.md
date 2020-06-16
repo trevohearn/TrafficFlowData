@@ -19,3 +19,9 @@ A presentation of our results can be found here: https://docs.google.com/present
 ## Partial Autocorrelation of Total Volume of Traffic
 ![partial_autocorr_weekdiff](https://github.com/trevohearn/TrafficFlowData/blob/master/images/partial_autocorr_weekdiff.png)
 - This partial autocorrelation uses a feature that is offset by a week
+
+# Time Savings
+- No traffic : **8 - 12** min.
+- Medium traffic : **9 - 16** min.
+- Full traffic : **14 - 26** min.
+![Sydney Road Route](https://github.com/trevohearn/TrafficFlowData/blob/master/images/sydney_traffic_maps_time.png)

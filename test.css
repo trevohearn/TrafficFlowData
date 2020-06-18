@@ -1,23 +1,32 @@
+body {
+  background-color: yellow;
+}
+
 #header {
   background-color : red;
-  padding: 2em;
-  margin: 10%;
+  padding: 10px;
+  float: both;
 }
+
+#header > h1 {
+  font-size: 12px;
+  padding-left: 25%;
+  padding-right: 25%;
+}
+
 #body {
   background-color : blue;
   padding: 10%;
-  margin: 10%;
 }
 
 #leftbar {
   float: left;
-  padding: 2em;
-  margin: 10%;
+  padding: 10px;
   background-color: grey;
+  position: fixed;
 }
 
 #footer {
   background-color : green;
-  padding: 10em;
-  margin: 10%;
+  padding: 10px;
 }

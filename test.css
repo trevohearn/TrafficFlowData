@@ -1,10 +1,17 @@
 body {
   background-color: yellow;
 }
+img {
+width : 200%;
+}
 
 #header {
   background-color : red;
   padding: 10px;
+  position : fixed;
+  top : 0px;
+  left : 0px;
+  width : 100%;
 }
 
 #header > h1 {
@@ -17,7 +24,6 @@ body {
   margin-left : 200px;
   background-color : blue;
   padding: 5%;
-  display : inline-block;
 }
 
 /*
@@ -26,21 +32,23 @@ body {
 }
 */
 #container {
-  clear: both;
-  display : inline-block;
+  display : block;
 }
+#container:after {
+  clear : both;
+}
+/*
 .stuff {
   float : left;
 }
+*/
 #leftbar {
   height : 100%;
   width : 200px;
-  /*position : fixed;*/
-  /*z-index : 1;*/
-  /*
-  top : 0;
-  */
-  left : 0;
+  position : fixed;
+  z-index : 1;
+  top : 50px;
+  left : 10px;
   background-color: grey;
   overflow-x : hidden;
   padding-top: 20px;
@@ -56,4 +64,5 @@ body {
 #footer {
   background-color : green;
   padding: 10px;
+  z-index : 0;
 }

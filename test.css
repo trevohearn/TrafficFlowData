@@ -2,10 +2,18 @@ body {
   background-color: yellow;
 }
 
+fieldset {
+  width: auto;
+  display: inline-block;
+}
+
+img {
+  max-width: 100%;
+}
+
 #header {
   background-color : red;
   padding: 10px;
-  float: both;
 }
 
 #header > h1 {
@@ -16,14 +24,15 @@ body {
 
 #body {
   background-color : blue;
-  padding: 10%;
+  padding: 5%;
+  display: inline-block;
 }
 
 #leftbar {
-  float: left;
   padding: 10px;
   background-color: grey;
-  position: fixed;
+  display: inline-block;
+/*  position: fixed; */
 }
 
 #footer {

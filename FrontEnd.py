@@ -26,7 +26,8 @@ app.layout = html.Div([ #container
                 ], value='test')
     ],
      style={'background-color' : 'red',
-            'float' : 'left'
+            'float' : 'left',
+            'margin' : '10%'
      }),
     #middle
     html.Div([#dcc.Graph(id='graph')

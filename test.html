@@ -8,43 +8,45 @@
     <div id='header'>
       <h1>Traffic Flow Data - Sydney, Australia</h1>
     </div>
-    <div id='leftbar'>
-      <form>
-        <fieldset>
-          <legend>Select the Model</legend>
-            <p>
-              <Label>Select list</label>
-                <select id='models'>
-                  <option value='AR'>AR</option>
-                  <option value='ARIMA'>ARIMA</option>
-                  <option value='SARIMAX'>SARIMAX</option>
-                </select>
-            </p>
-        </fieldset>
-      </form>
-      <p>
-        <Label>Select Model</label>
-          <select id='models'>
-            <option value='AR'>AR</option>
-            <option value='ARIMA'>ARIMA</option>
-            <option value='SARIMAX'>SARIMAX</option>
-          </select>
-      </p>
-      <p>
-        <Label>Select Parameters</label>
-          <select id='models'>
-            <option value='AR'>AR</option>
-            <option value='ARIMA'>ARIMA</option>
-            <option value='SARIMAX'>SARIMAX</option>
-          </select>
-      </p>
-    </div>
-    <div id='body'>
+    <div id='container'>
+      <div class='stuff' id='leftbar'>
+        <form>
+          <fieldset>
+            <legend>Select the Model</legend>
+              <p>
+                <Label>Select list</label>
+                  <select id='models'>
+                    <option value='AR'>AR</option>
+                    <option value='ARIMA'>ARIMA</option>
+                    <option value='SARIMAX'>SARIMAX</option>
+                  </select>
+              </p>
+          </fieldset>
+        </form>
+        <p>
+          <Label>Select Model</label>
+            <select id='models'>
+              <option value='AR'>AR</option>
+              <option value='ARIMA'>ARIMA</option>
+              <option value='SARIMAX'>SARIMAX</option>
+            </select>
+        </p>
+        <p>
+          <Label>Select Parameters</label>
+            <select id='models'>
+              <option value='AR'>AR</option>
+              <option value='ARIMA'>ARIMA</option>
+              <option value='SARIMAX'>SARIMAX</option>
+            </select>
+        </p>
+      </div>
+      <div class='stuff' id='body'>
 
-      <p>'this is the body'</p>
-<!--      <img src='images/autocorr_totalvolume.png' />
-     <img src='images/partial_autocorr_weekdiff.png' />
--->
+        <p>'this is the body'</p>
+        <img src='images/autocorr_totalvolume.png' />
+        <img src='images/partial_autocorr_weekdiff.png' />
+
+      </div>
     </div>
     <div id='footer'>
       <h4>Resources:</h4>

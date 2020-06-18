@@ -2,15 +2,6 @@ body {
   background-color: yellow;
 }
 
-fieldset {
-  width: auto;
-  display: inline-block;
-}
-
-img {
-  max-width: 100%;
-}
-
 #header {
   background-color : red;
   padding: 10px;
@@ -23,18 +14,45 @@ img {
 }
 
 #body {
+  margin-left : 200px;
   background-color : blue;
   padding: 5%;
-  display: inline-block;
+  display : inline-block;
 }
 
+/*
+#container {
+  display: inline-block;
+}
+*/
+#container {
+  clear: both;
+  display : inline-block;
+}
+.stuff {
+  float : left;
+}
+#leftbar {
+  height : 100%;
+  width : 200px;
+  /*position : fixed;*/
+  /*z-index : 1;*/
+  /*
+  top : 0;
+  */
+  left : 0;
+  background-color: grey;
+  overflow-x : hidden;
+  padding-top: 20px;
+}
+
+/*
 #leftbar {
   padding: 10px;
   background-color: grey;
-  display: inline-block;
-/*  position: fixed; */
+  display : inline-block;
 }
-
+*/
 #footer {
   background-color : green;
   padding: 10px;

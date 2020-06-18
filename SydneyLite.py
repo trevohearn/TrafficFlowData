@@ -117,7 +117,8 @@ def test_stationarity(timeseries, window):
 
 
 
-
+#get user directory
+user_directory = None
 
 # import files
 if user_directory != None:    #i.e.: use the directory given

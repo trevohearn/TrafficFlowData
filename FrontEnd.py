@@ -15,6 +15,7 @@ import plotly.graph_objects as go
 
 import pandas as pd
 from statsmodels.tsa.ar_model import AR, ARResults
+from statsmodels.tsa.arima_model import ARMA, ARIMA
 
 #internal methods
 def getLabels(dates):
@@ -56,7 +57,7 @@ app.layout = html.Div([ #container
     html.P('Select a Start Date', style={'text-align' : 'center'}),
     dcc.Dropdown(id='startdate', options=getLabels(df.index[0:-11]), value=df.index[0]),
     html.P('Select an End Date', style={'text-align' : 'center'}),
-    dcc.Dropdown(id='enddate', options=getLabels(df.index[1:-10]), value=df.index[-1]),
+    dcc.Dropdown(id='enddate', options=getLabels(df.index[1:-10]), value=df.index[-11]),
     html.P('Select a Model', style={'text-align' : 'center'}),
     dcc.Dropdown(id='drop_type', options=[
             {'label' : 'AR', 'value' : 'AR'},
@@ -64,11 +65,11 @@ app.layout = html.Div([ #container
             {'label' : 'SARIMAX', 'value' : 'SARIMAX'}
             ], value='AR'),
     html.P('P', style={'text-align' : 'center'}),
-    dcc.Input(id='pvalue', type='number', value=1, debounce=True),
+    dcc.Input(id='pvalue', type='number', value=2, debounce=True),
     html.P('D', style={'text-align' : 'center'}),
     dcc.Input(id='dvalue', type='number', value=1, debounce=True),
     html.P('Q', style={'text-align' : 'center'}),
-    dcc.Input(id='qvalue', type='number', value=1, debounce=True)
+    dcc.Input(id='qvalue', type='number', value=2, debounce=True)
     ],
      style={
        'height' : '100%',
@@ -105,8 +106,8 @@ app.layout = html.Div([ #container
 })
 
 
-def makeTrace(x, y):
-    return go.Scatter(x=x, y=y)
+def makeTrace(x, y, name):
+    return go.Scatter(x=x, y=y, name=name)
 
 #return statistical results from ARResults
 def getTableResults():
@@ -115,10 +116,13 @@ def getTableResults():
 @app.callback(Output('graph', 'figure'),
                 [Input('drop_type', 'value'),
                 Input('startdate', 'value'),
-                Input('enddate', 'value')]
+                Input('enddate', 'value'),
+                Input('pvalue', 'value'),
+                Input('dvalue', 'value'),
+                Input('qvalue', 'value')]
                  #Input(, 'value')])
 )
-def choose(drop_type, startdate, enddate):
+def choose(drop_type, startdate, enddate, pvalue, dvalue, qvalue):
     print(drop_type)
     print('----------------------------')
     print(startdate)
@@ -127,28 +131,39 @@ def choose(drop_type, startdate, enddate):
     print(enddate)
     print(type(enddate))
     slicedf = df.loc[startdate : enddate]
+    print('----------------------------')
+    print(len(slicedf.index))
     test_slice = df.loc[enddate:]
     endtime = list(pd.date_range(slicedf.index[-1], periods=24, freq='H'))[-1]
     x = [0,1,2,3,4]
     if (drop_type == 'AR'):
-        m = AR(slicedf)
+        m = AR(slicedf['TotalVolume'])
         mnolag = m.fit(method='mle', ic='aic')
-        preds = mnolag.predict(start=slicedf.index[-1],end=endtime, dynamic=False).rename('AR PREDICTIONS')
-        trace1 = makeTrace(preds.index, preds.values)
-        trace2 = makeTrace(test_slice.index, test_slice.TotalVolume)
-        print(type(trace1))
-        print(type(trace2))
+        preds = mnolag.predict(start=slicedf.index[-11],end=endtime, dynamic=False).rename('AR PREDICTIONS')
+        trace1 = makeTrace(preds.index, preds.values, 'Predicitons')
+        trace2 = makeTrace(test_slice.index, test_slice.TotalVolume, 'Testing Data')
+        half = (slicedf.shape[0] // 100)
+        trace3 = makeTrace(slicedf.index[half:], slicedf['TotalVolume'].values[half:], 'Selected Data')
     elif (drop_type == 'ARIMA'):
-        trace1 = makeTrace(x, [3,3,3,3,3])
-        trace2 = makeTrace(x, [4,4,4,4,4])
+        m = ARIMA(slicedf['TotalVolume'], order=(pvalue, dvalue, qvalue))
+        mfit = m.fit(method='mle')
+        preds = mfit.predict(start=test_slice.index[0], end=test_slice.index[-1], dynamic=False)
+        trace1 = makeTrace(preds.index, preds.values, 'Predictions')
+        trace2 = makeTrace(test_slice.index, test_slice.TotalVolume, 'Testing Data')
+        half = (slicedf.shape[0] // 100)
+        trace3 = makeTrace(slicedf.index[half:], slicedf['TotalVolume'].values[half:], 'Selected Data')
     elif (drop_type == 'SARIMAX'):
-        trace1 = makeTrace(x, [5,5,5,5,5])
-        trace2 = makeTrace(x, [6,6,6,6,6])
+        trace1 = makeTrace(x, [5,5,5,5,5], '5', 'Predictions')
+        trace2 = makeTrace(x, [6,6,6,6,6], '6', 'Testing Data')
+        half = (slicedf.shape[0] // 100)
+        trace3 = makeTrace(slicedf.index[half:], slicedf['TotalVolume'].values[half:], 'Selected Data')
     else:
-        trace1 = makeTrace(x, [7,7,7,7,7])
-        trace2 = makeTrace(x, [8,8,8,8,8])
+        trace1 = makeTrace(x, [7,7,7,7,7], '7', 'Predictions')
+        trace2 = makeTrace(x, [8,8,8,8,8], '8', 'Testing Data')
+        half = (slicedf.shape[0] // 100)
+        trace3 = makeTrace(slicedf.index[half:], slicedf['TotalVolume'].values[half:], 'Selected Data')
     return {
-            'data' : [trace1, trace2],
+            'data' : [trace1, trace2, trace3],
             'type' : 'scatter',
             'name' : drop_type,
             'layout' : go.Layout(title=drop_type, barmode='stack')

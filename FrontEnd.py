@@ -16,10 +16,19 @@ import plotly.graph_objects as go
 import pandas as pd
 from statsmodels.tsa.ar_model import AR, ARResults
 
+#internal methods
+def getLabels(dates):
+    labels = []
+    for d in dates:
+        labels.append({'label' : d, 'value' : d})
+    return labels
+
+
 
 df = pd.read_csv('test_df_w_timeshift.csv')
 df['Date_IntervalStart'] = pd.to_datetime(df['Date_IntervalStart'])
-
+df.set_index('Date_IntervalStart', inplace=True)
+startdates = df.index[0]
 
 
 app = dash.Dash(__name__)
@@ -36,7 +45,7 @@ app.layout = html.Div([ #container
     ], style={
       'background-color' : 'red',
       'padding' : '10px',
-      'position' : 'fixed',
+      'z-index' : '1',
       'top' : '0px',
       'left' : '0px',
       'width' : '100%'
@@ -45,9 +54,9 @@ app.layout = html.Div([ #container
     #left bar
     html.Div([
     html.P('Select a Start Date', style={'text-align' : 'center'}),
-    dcc.Dropdown(id='startdate', value=df.index[0]),
+    dcc.Dropdown(id='startdate', options=getLabels(df.index[0:-11]), value=df.index[0]),
     html.P('Select an End Date', style={'text-align' : 'center'}),
-    dcc.Dropdown(id='enddate', value=df.index[-1]),
+    dcc.Dropdown(id='enddate', options=getLabels(df.index[1:-10]), value=df.index[-1]),
     html.P('Select a Model', style={'text-align' : 'center'}),
     dcc.Dropdown(id='drop_type', options=[
             {'label' : 'AR', 'value' : 'AR'},
@@ -92,9 +101,6 @@ app.layout = html.Div([ #container
             )
 
 ], style={
-        'width': '80%',
-        'height' : '80%',
-        'padding' : '1em',
         'background-color' : 'yellow'
 })
 
@@ -102,6 +108,9 @@ app.layout = html.Div([ #container
 def makeTrace(x, y):
     return go.Scatter(x=x, y=y)
 
+#return statistical results from ARResults
+def getTableResults():
+    return None
 
 @app.callback(Output('graph', 'figure'),
                 [Input('drop_type', 'value'),
@@ -110,6 +119,13 @@ def makeTrace(x, y):
                  #Input(, 'value')])
 )
 def choose(drop_type, startdate, enddate):
+    print(drop_type)
+    print('----------------------------')
+    print(startdate)
+    print(type(startdate))
+    print('----------------------------')
+    print(enddate)
+    print(type(enddate))
     slicedf = df.loc[startdate : enddate]
     test_slice = df.loc[enddate:]
     endtime = list(pd.date_range(slicedf.index[-1], periods=24, freq='H'))[-1]
@@ -120,6 +136,8 @@ def choose(drop_type, startdate, enddate):
         preds = mnolag.predict(start=slicedf.index[-1],end=endtime, dynamic=False).rename('AR PREDICTIONS')
         trace1 = makeTrace(preds.index, preds.values)
         trace2 = makeTrace(test_slice.index, test_slice.TotalVolume)
+        print(type(trace1))
+        print(type(trace2))
     elif (drop_type == 'ARIMA'):
         trace1 = makeTrace(x, [3,3,3,3,3])
         trace2 = makeTrace(x, [4,4,4,4,4])

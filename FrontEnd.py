@@ -64,6 +64,8 @@ app.layout = html.Div([ #container
             {'label' : 'ARIMA', 'value' : 'ARIMA'},
             {'label' : 'SARIMAX', 'value' : 'SARIMAX'}
             ], value='AR'),
+    html.P('Number of Prediction Points', style={'text-align' : 'center'}),
+    dcc.Input(id='points', type='number', value=(24 * 7), debounce=True),
     html.P('P', style={'text-align' : 'center'}),
     dcc.Input(id='pvalue', type='number', value=2, debounce=True),
     html.P('D', style={'text-align' : 'center'}),
@@ -119,10 +121,12 @@ def getTableResults():
                 Input('enddate', 'value'),
                 Input('pvalue', 'value'),
                 Input('dvalue', 'value'),
-                Input('qvalue', 'value')]
+                Input('qvalue', 'value'),
+                Input('points', 'value')
+                ]
                  #Input(, 'value')])
 )
-def choose(drop_type, startdate, enddate, pvalue, dvalue, qvalue):
+def choose(drop_type, startdate, enddate, pvalue, dvalue, qvalue, points):
     print(drop_type)
     print('----------------------------')
     print(startdate)
@@ -134,7 +138,7 @@ def choose(drop_type, startdate, enddate, pvalue, dvalue, qvalue):
     print('----------------------------')
     print(len(slicedf.index))
     test_slice = df.loc[enddate:]
-    endtime = list(pd.date_range(slicedf.index[-1], periods=24, freq='H'))[-1]
+    endtime = list(pd.date_range(slicedf.index[-1], periods=points, freq='H'))[-1]
     x = [0,1,2,3,4]
     if (drop_type == 'AR'):
         m = AR(slicedf['TotalVolume'])
@@ -147,10 +151,10 @@ def choose(drop_type, startdate, enddate, pvalue, dvalue, qvalue):
     elif (drop_type == 'ARIMA'):
         m = ARIMA(slicedf['TotalVolume'], order=(pvalue, dvalue, qvalue))
         mfit = m.fit(method='mle')
-        preds = mfit.predict(start=test_slice.index[0], end=test_slice.index[-1], dynamic=False)
+        preds = mfit.predict(start=test_slice.index[0], end=endtime, dynamic=False)
         trace1 = makeTrace(preds.index, preds.values, 'Predictions')
         trace2 = makeTrace(test_slice.index, test_slice.TotalVolume, 'Testing Data')
-        half = (slicedf.shape[0] // 100)
+        half = (slicedf.shape[0] // 400)
         trace3 = makeTrace(slicedf.index[half:], slicedf['TotalVolume'].values[half:], 'Selected Data')
     elif (drop_type == 'SARIMAX'):
         trace1 = makeTrace(x, [5,5,5,5,5], '5', 'Predictions')

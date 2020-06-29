@@ -32,7 +32,17 @@ df.set_index('Date_IntervalStart', inplace=True)
 startdates = df.index[0]
 
 
-app = dash.Dash(__name__)
+app = dash.Dash('Time-Series Analysis Comparison')
+
+# Color Palette:
+# #011f4b
+# #03396c
+# #005b96
+# #6497b1
+# #b3cde0
+
+
+
 app.layout = html.Div([ #container
     #top
     html.Div([html.H2('Traffic Flow Data',
@@ -44,7 +54,7 @@ app.layout = html.Div([ #container
                         }
                     )
     ], style={
-      'background-color' : 'red',
+      'background-color' : '#011f4b',
       'padding' : '10px',
       'z-index' : '1',
       'top' : '0px',
@@ -80,7 +90,7 @@ app.layout = html.Div([ #container
        'z-index' : '1',
        'top' : '50px',
        'left' : '10px',
-       'background-color' : 'grey',
+       'background-color' : '#03396c',
        'overflow-x' : 'hidden',
        'padding-top' : '20px',
        'padding-right' : '10px',
@@ -91,7 +101,7 @@ app.layout = html.Div([ #container
               dcc.Graph(id='graph')
     ], style={
       'margin-left' : '200px',
-      'background-color' : 'blue',
+      'background-color' : '#6497b1',
       'padding' : '5%'
     }
     ),
@@ -100,11 +110,11 @@ app.layout = html.Div([ #container
             html.P('this is the bottom')],
 
             style={'padding' : '1em',
-                    'background-color' : 'green'}
+                    'background-color' : '#005b96'}
             )
 
 ], style={
-        'background-color' : 'yellow'
+        'background-color' : '#b3cde0'
 })
 
 

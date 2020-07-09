@@ -40,7 +40,7 @@ app = dash.Dash('Time-Series Analysis Comparison')
 # #005b96
 # #6497b1
 # #b3cde0
-
+# use three main colors with a fouth for small styles
 
 
 app.layout = html.Div([ #container
@@ -137,16 +137,16 @@ def getTableResults():
                  #Input(, 'value')])
 )
 def choose(drop_type, startdate, enddate, pvalue, dvalue, qvalue, points):
-    print(drop_type)
-    print('----------------------------')
-    print(startdate)
-    print(type(startdate))
-    print('----------------------------')
-    print(enddate)
-    print(type(enddate))
+    # print(drop_type)
+    # print('----------------------------')
+    # print(startdate)
+    # print(type(startdate))
+    # print('----------------------------')
+    # print(enddate)
+    # print(type(enddate))
     slicedf = df.loc[startdate : enddate]
-    print('----------------------------')
-    print(len(slicedf.index))
+    # print('----------------------------')
+    # print(len(slicedf.index))
     test_slice = df.loc[enddate:]
     endtime = list(pd.date_range(slicedf.index[-1], periods=points, freq='H'))[-1]
     x = [0,1,2,3,4]

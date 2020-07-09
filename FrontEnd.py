@@ -186,6 +186,8 @@ def choose(drop_type, startdate, enddate, pvalue, dvalue, qvalue, points):
             'layout' : go.Layout(title=drop_type, barmode='stack')
             }
 
-
+#create second graph to show fbprophet results
+#create third graph to show LSTM results
+#add functionality to edit LSTM parameters
 
 app.run_server()#, use_reloader=False , debug=True

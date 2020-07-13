@@ -41,7 +41,7 @@ app = dash.Dash('Time-Series Analysis Comparison')
 # #6497b1
 # #b3cde0
 # use three main colors with a fouth for small styles
-
+# add color layouts for types of models shown
 
 app.layout = html.Div([ #container
     #top
@@ -124,6 +124,9 @@ def makeTrace(x, y, name):
 #return statistical results from ARResults
 def getTableResults():
     return None
+
+#add callbacks for seperate functionality
+#efficiency increase
 
 @app.callback(Output('graph', 'figure'),
                 [Input('drop_type', 'value'),

@@ -129,6 +129,12 @@ def getTableResults():
 #add callbacks for seperate functionality
 #efficiency increase
 
+# get statistical results from fbprophet
+# refer to jupyter notebook
+def getFBProphetResults():
+    return None
+
+
 @app.callback(Output('graph', 'figure'),
                 [Input('drop_type', 'value'),
                 Input('startdate', 'value'),

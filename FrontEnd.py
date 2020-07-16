@@ -134,6 +134,10 @@ def getTableResults():
 def getFBProphetResults():
     return None
 
+#return statistical results from lstm model
+#refer to jupyter notebook
+def getLSTMResults():
+    return None
 
 @app.callback(Output('graph', 'figure'),
                 [Input('drop_type', 'value'),

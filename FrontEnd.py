@@ -35,6 +35,7 @@ startdates = df.index[0]
 app = dash.Dash('Time-Series Analysis Comparison')
 
 # Color Palette:
+# https://www.color-hex.com/color-palettes/
 # #'background-color' : '011f4b',
 # #'background-color' : '03396c',
 # #'background-color' : '005b96',
@@ -42,6 +43,14 @@ app = dash.Dash('Time-Series Analysis Comparison')
 # #'background-color' : 'b3cde0',
 # use three main colors with a fouth for small styles
 # add color layouts for types of models shown
+
+# morning blue
+# 9ecbc8	(158,203,200)
+# 008684	(0,134,132)
+# 005e78	(0,94,120)
+# 384f6b	(56,79,107)
+# 273347	(39,51,71)
+
 
 app.layout = html.Div([ #container
     #top

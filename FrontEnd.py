@@ -99,7 +99,9 @@ app.layout = html.Div([ #container
      }),
     #middle
     html.Div([#dcc.Graph(id='graph')
-              dcc.Graph(id='graph')
+              dcc.Graph(id='graph'),
+              dcc.Graph(id='graph2'),
+              dcc.Graph(id='graph3')
     ], style={
       'margin-left' : '200px',
       'background-color' : '#6497b1',
@@ -138,6 +140,8 @@ def getFBProphetResults():
 #refer to jupyter notebook
 def getLSTMResults():
     return None
+
+
 
 @app.callback(Output('graph', 'figure'),
                 [Input('drop_type', 'value'),
@@ -199,6 +203,29 @@ def choose(drop_type, startdate, enddate, pvalue, dvalue, qvalue, points):
             'name' : drop_type,
             'layout' : go.Layout(title=drop_type, barmode='stack')
             }
+
+@app.callback(Output('graph2', 'figure'),
+                [Input('startdate', 'value'),
+                Input('enddate', 'value'),
+                Input('points', 'value')
+                ]
+
+)
+def graph2():
+    return None
+
+
+@app.callback(Output('graph3', 'figure'),
+                [Input('startdate', 'value'),
+                Input('enddate', 'value'),
+                Input('points', 'value')
+                ]
+
+)
+def graph3():
+    return None
+
+
 
 #create second graph to show fbprophet results
 #create third graph to show LSTM results

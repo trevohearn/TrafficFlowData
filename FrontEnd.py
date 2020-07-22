@@ -213,25 +213,35 @@ def choose(drop_type, startdate, enddate, pvalue, dvalue, qvalue, points):
             'layout' : go.Layout(title=drop_type, barmode='stack')
             }
 
+#graph 2 is FBProphet Graph
 @app.callback(Output('graph2', 'figure'),
                 [Input('startdate', 'value'),
                 Input('enddate', 'value'),
                 Input('points', 'value')
                 ]
 
-)
-def graph2():
+)# points - how many values to predict going forward
+def graph2(startdate, enddate, points):
+    #redefine df to set up for fbprophet
+    dframe = getProphetFrame(df)
     return None
 
+#helper method for FBProphet callback
+def getProphetFrame(frame):
+    fbFrame = frame.copy()
 
+
+#LSTM prediction graph
+#set up LSTM predictions depending on points
 @app.callback(Output('graph3', 'figure'),
                 [Input('startdate', 'value'),
                 Input('enddate', 'value'),
                 Input('points', 'value')
                 ]
 
-)
-def graph3():
+)# points - how many values to predict going forward
+def graph3(startdate, enddate, points):
+
     return None
 
 

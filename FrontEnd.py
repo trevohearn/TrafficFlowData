@@ -224,6 +224,8 @@ def choose(drop_type, startdate, enddate, pvalue, dvalue, qvalue, points):
 def graph2(startdate, enddate, points):
     #redefine df to set up for fbprophet
     dframe = getProphetFrame(df)
+    #date range for predictions
+    list(pd.date_range(dframe.index[-1], periods=points, freq='H'))
     return None
 
 #helper method for FBProphet callback
@@ -241,7 +243,9 @@ def getProphetFrame(frame):
 
 )# points - how many values to predict going forward
 def graph3(startdate, enddate, points):
-
+    dframe = df[startdate : enddate]
+    #date range for predictions
+    list(pd.date_range(dframe.index[-1], periods=points, freq='H'))
     return None
 
 

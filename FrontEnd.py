@@ -217,6 +217,42 @@ def choose(drop_type, startdate, enddate, pvalue, dvalue, qvalue, points):
 #graph 3
 
 
+#LSTM prediction graph
+#set up LSTM predictions depending on points
+@app.callback(Output('graph3', 'figure'),
+                [Input('startdate', 'value'),
+                Input('enddate', 'value'),
+                Input('points', 'value')
+                ]
+
+)# points - how many values to predict going forward
+def graph3(startdate, enddate, points):
+    dframe = df[startdate : enddate]
+    #date range for predictions
+    list(pd.date_range(dframe.index[-1], periods=points, freq='H'))
+    return None
+
+#graph 2 is FBProphet Graph
+@app.callback(Output('graph2', 'figure'),
+                [Input('startdate', 'value'),
+                Input('enddate', 'value'),
+                Input('points', 'value')
+                ]
+
+)
+# points - how many values to predict going forward
+def graph2(startdate, enddate, points):
+    #redefine df to set up for fbprophet
+    dframe = getProphetFrame(df)
+    #date range for predictions
+    list(pd.date_range(dframe.index[-1], periods=points, freq='H'))
+    return None
+
+#helper method for FBProphet callback
+def getProphetFrame(frame):
+    fbFrame = frame.copy()
+
+
 
 #create second graph to show fbprophet results
 #create third graph to show LSTM results

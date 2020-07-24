@@ -91,7 +91,11 @@ app.layout = html.Div([ #container
     html.P('D', style={'text-align' : 'center'}),
     dcc.Input(id='dvalue', type='number', value=1, debounce=True),
     html.P('Q', style={'text-align' : 'center'}),
-    dcc.Input(id='qvalue', type='number', value=2, debounce=True)
+    dcc.Input(id='qvalue', type='number', value=2, debounce=True),
+    html.P('Floor', style={'text-align' : 'center'}),
+    dcc.Input(id='floor', type='number', value=0, debounce=True),
+    html.P('Cap', style={'text-align' : 'center'}),
+    dcc.Input(id='cap', type='number', value=2000, debounce=True)
     ],
      style={
        'height' : '100%',
@@ -214,8 +218,53 @@ def choose(drop_type, startdate, enddate, pvalue, dvalue, qvalue, points):
             'layout' : go.Layout(title=drop_type, barmode='stack')
             }
 
-#graph 2
-#graph 3
+#graph 2 is FBProphet Graph
+@app.callback(Output('graph2', 'figure'),
+                [Input('startdate', 'value'),
+                Input('enddate', 'value'),
+                Input('points', 'value'),
+                Input('floor', 'value'),
+                Input('cap', 'value')
+                ]
+
+)
+# points - how many values to predict going forward
+# forecast['ds'] - datestamp
+# forecast['yhat'] - pred points
+# forecast columns :
+# Index(['ds', 'trend', 'cap', 'yhat_lower', 'yhat_upper', 'trend_lower',
+#        'trend_upper', 'additive_terms', 'additive_terms_lower',
+#        'additive_terms_upper', 'daily', 'daily_lower', 'daily_upper', 'weekly',
+#        'weekly_lower', 'weekly_upper', 'yearly', 'yearly_lower',
+#        'yearly_upper', 'multiplicative_terms', 'multiplicative_terms_lower',
+#        'multiplicative_terms_upper', 'yhat'],
+#       dtype='object')
+def graph2(startdate, enddate, points, floor, cap):
+    #redefine df to set up for fbprophet
+    m = getProphetFrame(df[startdate : enddate])
+    future = m.make_future_dataframe(periods=points, freq='H')
+    future['floor'] = floor
+    future['cap'] = cap
+    forecast = m.predict(future)
+    forecast[['ds', 'yhat']]
+    trace1 = makeTrace(forecast['ds'], forecast['yhat'], 'Predictions')
+    #plot with plotly and integrate into dash
+
+    #date range for predictions
+    #list(pd.date_range(dframe.index[-1], periods=points, freq='H'))
+    return {
+            'data' : [trace1],#, trace2, trace3],
+            'type' : 'scatter',
+            'name' : 'FBProphet',
+            'layout' : go.Layout(title='FBProphet', barmode='stack')
+            }
+
+#helper method for FBProphet callback
+def getProphetFrame(frame):
+    m = Prophet(daily_seasonality=True, yearly_seasonality = True, weekly_seasonality = True)
+    m.fit(frame)
+    return m
+    #fbFrame = frame.copy()
 
 
 #LSTM prediction graph
@@ -225,46 +274,12 @@ def choose(drop_type, startdate, enddate, pvalue, dvalue, qvalue, points):
                 Input('enddate', 'value'),
                 Input('points', 'value')
                 ]
-
 )# points - how many values to predict going forward
 def graph3(startdate, enddate, points):
     dframe = df[startdate : enddate]
     #date range for predictions
     list(pd.date_range(dframe.index[-1], periods=points, freq='H'))
     return None
-
-#graph 2 is FBProphet Graph
-@app.callback(Output('graph2', 'figure'),
-                [Input('startdate', 'value'),
-                Input('enddate', 'value'),
-                Input('points', 'value')
-                ]
-
-)
-# points - how many values to predict going forward
-def graph2(startdate, enddate, points):
-    #redefine df to set up for fbprophet
-    m = getProphetFrame(df)
-    future = m.make_future_dataframe(periods=(24*7), freq='H')
-    future['floor'] = 0
-    future['cap'] = 2000
-    forecast = m.predict(future)
-    forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail()
-    #plot with plotly and integrate into dash
-
-    #date range for predictions
-    list(pd.date_range(dframe.index[-1], periods=points, freq='H'))
-
-
-    return None
-
-#helper method for FBProphet callback
-def getProphetFrame(frame):
-    m = Prophet(daily_seasonality=True, yearly_seasonality = True, weekly_seasonality = True)
-    m.fit(frame)
-    return m
-    #fbFrame = frame.copy()
-
 
 
 #create second graph to show fbprophet results

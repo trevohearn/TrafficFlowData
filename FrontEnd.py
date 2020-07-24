@@ -241,12 +241,23 @@ def choose(drop_type, startdate, enddate, pvalue, dvalue, qvalue, points):
 #       dtype='object')
 def graph2(startdate, enddate, points, floor, cap):
     #redefine df to set up for fbprophet
-    m = getProphetFrame(df[startdate : enddate])
+    df_p = df[startdate : enddate].copy()
+    df_p['Date_IntervalStart'] = pd.to_datetime(df_p['Date_IntervalStart'])
+
+    df_p.rename(columns={'Date_IntervalStart' : 'ds', 'TotalVolume' : 'y'}, inplace=True)
+    df_p.dropna(inplace=True)
+    df_p.drop(columns=['week_timeshift'], inplace=True)
+
+    df_p.set_index('ds', inplace=True)
+    df_p_hourly = df_p.resample('H').sum()
+    df_p_hourly.reset_index(inplace=True)
+
+    m = Prophet(daily_seasonality=True, yearly_seasonality = True, weekly_seasonality = True)
+    m.fit(df_p_hourly)
     future = m.make_future_dataframe(periods=points, freq='H')
     future['floor'] = floor
     future['cap'] = cap
     forecast = m.predict(future)
-    forecast[['ds', 'yhat']]
     trace1 = makeTrace(forecast['ds'], forecast['yhat'], 'Predictions')
     #plot with plotly and integrate into dash
 
@@ -261,8 +272,7 @@ def graph2(startdate, enddate, points, floor, cap):
 
 #helper method for FBProphet callback
 def getProphetFrame(frame):
-    m = Prophet(daily_seasonality=True, yearly_seasonality = True, weekly_seasonality = True)
-    m.fit(frame)
+
     return m
     #fbFrame = frame.copy()
 

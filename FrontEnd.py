@@ -16,6 +16,7 @@ import plotly.graph_objects as go
 import pandas as pd
 from statsmodels.tsa.ar_model import AR, ARResults
 from statsmodels.tsa.arima_model import ARMA, ARIMA
+from fbprophet import Prophet
 
 #internal methods
 def getLabels(dates):
@@ -243,14 +244,26 @@ def graph3(startdate, enddate, points):
 # points - how many values to predict going forward
 def graph2(startdate, enddate, points):
     #redefine df to set up for fbprophet
-    dframe = getProphetFrame(df)
+    m = getProphetFrame(df)
+    future = m.make_future_dataframe(periods=(24*7), freq='H')
+    future['floor'] = 0
+    future['cap'] = 2000
+    forecast = m.predict(future)
+    forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail()
+    #plot with plotly and integrate into dash
+
     #date range for predictions
     list(pd.date_range(dframe.index[-1], periods=points, freq='H'))
+
+
     return None
 
 #helper method for FBProphet callback
 def getProphetFrame(frame):
-    fbFrame = frame.copy()
+    m = Prophet(daily_seasonality=True, yearly_seasonality = True, weekly_seasonality = True)
+    m.fit(frame)
+    return m
+    #fbFrame = frame.copy()
 
 
 

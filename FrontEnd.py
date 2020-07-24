@@ -241,7 +241,8 @@ def choose(drop_type, startdate, enddate, pvalue, dvalue, qvalue, points):
 #       dtype='object')
 def graph2(startdate, enddate, points, floor, cap):
     #redefine df to set up for fbprophet
-    df_p = df[startdate : enddate].copy()
+    curdf = pd.read_csv('test_df_w_timeshift.csv')
+    df_p = curdf[startdate : enddate]
     df_p['Date_IntervalStart'] = pd.to_datetime(df_p['Date_IntervalStart'])
 
     df_p.rename(columns={'Date_IntervalStart' : 'ds', 'TotalVolume' : 'y'}, inplace=True)
@@ -251,7 +252,9 @@ def graph2(startdate, enddate, points, floor, cap):
     df_p.set_index('ds', inplace=True)
     df_p_hourly = df_p.resample('H').sum()
     df_p_hourly.reset_index(inplace=True)
-
+    print('----------------------------------')
+    print('in graph2')
+    print('----------------------------------')
     m = Prophet(daily_seasonality=True, yearly_seasonality = True, weekly_seasonality = True)
     m.fit(df_p_hourly)
     future = m.make_future_dataframe(periods=points, freq='H')

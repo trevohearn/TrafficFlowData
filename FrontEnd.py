@@ -240,34 +240,33 @@ def choose(drop_type, startdate, enddate, pvalue, dvalue, qvalue, points):
 #        'multiplicative_terms_upper', 'yhat'],
 #       dtype='object')
 def graph2(startdate, enddate, points, floor, cap):
+    print('into graph 2')
     #redefine df to set up for fbprophet
     curdf = pd.read_csv('test_df_w_timeshift.csv')
-    df_p = curdf[startdate : enddate]
-    df_p['Date_IntervalStart'] = pd.to_datetime(df_p['Date_IntervalStart'])
+    #set date string to timestamp
+    curdf['Date_IntervalStart'] = pd.to_datetime(curdf['Date_IntervalStart'])
+    curdf.rename(columns={'Date_IntervalStart' : 'ds', 'TotalVolume' : 'y'}, inplace=True)
+    curdf.dropna(inplace=True)
+    #curdf.drop(columns=['week_timeshift'], inplace=True)
 
-    df_p.rename(columns={'Date_IntervalStart' : 'ds', 'TotalVolume' : 'y'}, inplace=True)
-    df_p.dropna(inplace=True)
-    df_p.drop(columns=['week_timeshift'], inplace=True)
-
-    df_p.set_index('ds', inplace=True)
-    df_p_hourly = df_p.resample('H').sum()
+    curdf.set_index('ds', inplace=True)
+    curdf = curdf[startdate : enddate]
+    df_p_hourly = curdf.resample('H').sum()
     df_p_hourly.reset_index(inplace=True)
-    print('----------------------------------')
-    print('in graph2')
-    print('----------------------------------')
     m = Prophet(daily_seasonality=True, yearly_seasonality = True, weekly_seasonality = True)
-    m.fit(df_p_hourly)
+    m.fit(df_p_hourly[['ds', 'y']])
     future = m.make_future_dataframe(periods=points, freq='H')
     future['floor'] = floor
     future['cap'] = cap
     forecast = m.predict(future)
-    trace1 = makeTrace(forecast['ds'], forecast['yhat'], 'Predictions')
+    trace1 = makeTrace(df_p_hourly['ds'].values, df_p_hourly['y'].values, 'Selected Data')
+    trace2 = makeTrace(forecast['ds'].values, forecast['yhat'].values, 'Predictions')
     #plot with plotly and integrate into dash
 
     #date range for predictions
     #list(pd.date_range(dframe.index[-1], periods=points, freq='H'))
     return {
-            'data' : [trace1],#, trace2, trace3],
+            'data' : [trace1, trace2],#, trace2, trace3],
             'type' : 'scatter',
             'name' : 'FBProphet',
             'layout' : go.Layout(title='FBProphet', barmode='stack')
